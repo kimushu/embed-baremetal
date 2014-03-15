@@ -1,12 +1,17 @@
-
+/*
+ * Startup routine for Cortex-Mx Baremetal Environment
+ */
+	.syntax unified
 	.text
+
+/* Reset vector */
 .global	_reset
 _reset:
 	/* Initialize .data section */
 	ldr		r0, _ds		/* __data_start */
 	ldr		r1, _dsr	/* __data_source */
 	ldr		r2, _de		/* __data_end */
-	sub		r2, r3		/* __data_end - __data_start */
+	subs	r2, r2, r3		/* __data_end - __data_start */
 	bl		memcpy
 	/* Initialize .bss section */
 	ldr		r0, _bs		/* __bss_start */
@@ -35,8 +40,8 @@ _reset:
 	add		r4, #4
 2:	cmp		r5, r4
 	bhi		1b
-	/* Stop */
-	b		_halt
+	/* Finished */
+	b		_exit
 
 	.balign	4
 	_ds:	.long	__data_start
@@ -49,9 +54,16 @@ _reset:
 	_fs:	.long	__fini_array_start
 	_fe:	.long	__fini_array_end
 
-.global	_halt
-_halt:
+/* Exit program */
 .global	_exit
 _exit:
-	b .
+	/* fall through */
+
+/* Default ISR */
+.global	_halt
+_halt:
+	/* Disable all exceptions and interrupts */
+	cpsid	f
+	/* Halt */
+	b		.
 

@@ -15,7 +15,7 @@ SOURCE_AS = start.S
 LDS = lm4f.ld
 OBJECT = $(SOURCE_CC:.c=.o) $(SOURCE_AS:.S=.o)
 
-CFLAGS = -Wall -mcpu=cortex-m4 -mthumb -nostartfiles
+CFLAGS = -Wall -mcpu=cortex-m4 -mthumb -nostartfiles -g
 LDFLAGS = $(CFLAGS)
 
 all: $(TARGET).bin
